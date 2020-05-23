@@ -1,36 +1,28 @@
 struct Builder {}
 
-struct Node {
-  directory: String,
+trait BuilderError {
+  fn builder_error(&self) -> bool;
 }
 
-trait Build {
-  fn build(&self, dir: String) -> Node;
-}
+trait Build {}
 
-impl Build for Builder {
-  fn build(&self, dir: String) -> Node {
-    let node = Node { directory: dir };
-    return node;
+impl Build for Builder {}
+
+impl BuilderError for Builder {
+  fn builder_error(&self) -> bool {
+    return true;
   }
 }
-
 #[cfg(test)]
 mod tests {
   use super::*;
 
   #[test]
-  fn it_passes_through_string_tree() {
+  fn it_has_static_members_that_are_part_of_the_public_API() {
+    // https://github.com/broccolijs/broccoli/blob/master/test/builder_test.js#L77
+
     let builder = Builder {};
-    let build_tree = builder.build(String::from("test-app/"));
-    assert_eq!("test-app/", build_tree.directory);
+
+    assert!(builder.builder_error());
   }
-
-  #[test]
-  #[ignore]
-  fn it_calls_read_on_the_given_tree_object() {}
-
-  #[test]
-  #[ignore]
-  fn it_read_tree_deduplicates() {}
 }
